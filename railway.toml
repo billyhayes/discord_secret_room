@@ -2,15 +2,15 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "npm start"
+startCommand = "python3 start.py"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 
 [env]
-NODE_ENV = "production"
+PYTHON_ENV = "production"
 PORT = { default = "3000" }
 
 [service]
-name = "discord-invisible-bot"
+name = "discord-secret-room-bot"
