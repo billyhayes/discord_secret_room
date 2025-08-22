@@ -10,6 +10,7 @@ import os
 import sys
 import warnings
 from datetime import datetime
+from dotenv import load_dotenv
 
 # Suppress aiohttp warnings
 warnings.filterwarnings("ignore", message=".*Unclosed.*")
@@ -117,6 +118,9 @@ class MinimalBotChecker:
 
 def get_bot_token():
     """Get bot token from environment or user input"""
+    # Load environment variables from .env file
+    load_dotenv()
+
     # Try environment variable first
     token = os.getenv('DISCORD_BOT_TOKEN')
     if token:
@@ -132,6 +136,7 @@ def get_bot_token():
     # Ask user for token
     print("🔑 No token found in environment variable DISCORD_BOT_TOKEN")
     print("💡 You can set it with: export DISCORD_BOT_TOKEN=your_token_here")
+    print("💡 Or create a .env file with: DISCORD_BOT_TOKEN=your_token_here")
     print("📝 Or pass it as argument: python3 status_check.py YOUR_TOKEN")
 
     token = input("\nEnter your Discord bot token: ").strip()
