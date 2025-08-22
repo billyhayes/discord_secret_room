@@ -21,12 +21,12 @@ The `status_check.py` script is a minimal Discord bot status checker that verifi
    cp .env.example .env
    
    # Edit .env and add your actual bot token
-   # DISCORD_BOT_TOKEN=your_actual_bot_token_here
+   # DISCORD_TOKEN=your_actual_bot_token_here
    ```
 
    **Option B: Environment variable**
    ```bash
-   export DISCORD_BOT_TOKEN=your_bot_token_here
+   export DISCORD_TOKEN=your_bot_token_here
    ```
 
    **Option C: Command line argument**
@@ -105,7 +105,16 @@ If the bot shows as offline:
 2. Select your application
 3. Go to the "Bot" section
 4. Copy the token under "Token"
-5. Add it to your `.env` file
+5. Add it to your `.env` file as `DISCORD_TOKEN=your_token_here`
+
+### Additional Environment Variables
+
+Your bot may also require these environment variables:
+
+- `CLIENT_ID` - Your Discord application's client ID
+- `GUILD_ID` - The Discord server ID where your bot operates  
+- `DEBUG` - Set to `true` for detailed logging (optional)
+- `PORT` - Custom port for health check server (optional, defaults to 8080)
 
 ### Files
 

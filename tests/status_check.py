@@ -122,9 +122,9 @@ def get_bot_token():
     load_dotenv()
 
     # Try environment variable first
-    token = os.getenv('DISCORD_BOT_TOKEN')
+    token = os.getenv('DISCORD_TOKEN')
     if token:
-        print("🔑 Using token from DISCORD_BOT_TOKEN environment variable")
+        print("🔑 Using token from DISCORD_TOKEN environment variable")
         return token
 
     # Try command line argument
@@ -134,9 +134,9 @@ def get_bot_token():
         return token
 
     # Ask user for token
-    print("🔑 No token found in environment variable DISCORD_BOT_TOKEN")
-    print("💡 You can set it with: export DISCORD_BOT_TOKEN=your_token_here")
-    print("💡 Or create a .env file with: DISCORD_BOT_TOKEN=your_token_here")
+    print("🔑 No token found in environment variable DISCORD_TOKEN")
+    print("💡 You can set it with: export DISCORD_TOKEN=your_token_here")
+    print("💡 Or create a .env file with: DISCORD_TOKEN=your_token_here")
     print("📝 Or pass it as argument: python3 status_check.py YOUR_TOKEN")
 
     token = input("\nEnter your Discord bot token: ").strip()
