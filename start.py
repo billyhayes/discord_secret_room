@@ -10,8 +10,9 @@ import logging
 from datetime import datetime
 import discord
 from discord.ext import commands
-import asyncio
-from aiohttp import web
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import json
 
 # Configure logging for Railway
 logging.basicConfig(
@@ -48,29 +49,46 @@ bot = commands.Bot(
 )
 
 # Health check server for Railway
-async def health_handler(request):
-    return web.json_response({
-        "status": "healthy" if bot.is_ready() else "starting",
-        "bot_name": bot.user.name if bot.user else None,
-        "bot_id": bot.user.id if bot.user else None,
-        "guilds": len(bot.guilds) if bot.is_ready() else 0,
-        "uptime": "online" if bot.is_ready() else "connecting"
-    })
+class HealthHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == '/health':
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
 
-async def root_handler(request):
-    return web.Response(text="Discord Secret Room Bot is running! 🤖")
+            health_data = {
+                "status": "healthy" if bot.is_ready() else "starting",
+                "bot_name": bot.user.name if bot.user else None,
+                "bot_id": bot.user.id if bot.user else None,
+                "guilds": len(bot.guilds) if bot.is_ready() else 0,
+                "uptime": "online" if bot.is_ready() else "connecting"
+            }
+            self.wfile.write(json.dumps(health_data).encode())
 
-async def start_health_server():
-    app = web.Application()
-    app.router.add_get('/health', health_handler)
-    app.router.add_get('/', root_handler)
+        elif self.path == '/':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            self.wfile.write(b"Discord Secret Room Bot is running! 🤖")
+        else:
+            self.send_response(404)
+            self.end_headers()
 
+    def log_message(self, format, *args):
+        # Suppress default HTTP logging
+        pass
+
+def start_health_server():
     port = int(os.getenv('PORT', 3000))
-    runner = web.AppRunner(app)
-    await runner.setup()
-    site = web.TCPSite(runner, '0.0.0.0', port)
-    await site.start()
-    logger.info(f"Health check server running on port {port}")
+    server = HTTPServer(('0.0.0.0', port), HealthHandler)
+
+    def run_server():
+        logger.info(f"Health check server running on port {port}")
+        server.serve_forever()
+
+    server_thread = threading.Thread(target=run_server, daemon=True)
+    server_thread.start()
+    return server
 
 @bot.event
 async def on_ready():
@@ -310,17 +328,17 @@ async def flip_coin(ctx):
 
     await ctx.send(embed=embed)
 
-async def main():
+def main():
     """Main function to run the bot"""
     logger.info("🚀 Starting Discord Bot on Railway...")
     logger.info("Environment: " + ENVIRONMENT)
 
     try:
         # Start health check server
-        await start_health_server()
+        start_health_server()
 
         # Run the bot
-        await bot.start(BOT_TOKEN)
+        bot.run(BOT_TOKEN)
     except discord.LoginFailure:
         logger.error("❌ Invalid bot token! Check DISCORD_BOT_TOKEN environment variable.")
         sys.exit(1)
@@ -332,4 +350,4 @@ async def main():
         sys.exit(1)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
