@@ -12,7 +12,7 @@ import sys
 from datetime import datetime
 
 # Bot configuration
-BOT_TOKEN = "***REMOVED***"
+BOT_TOKEN = ""
 COMMAND_PREFIX = "!"
 
 # Setup intents

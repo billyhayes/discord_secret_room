@@ -215,7 +215,7 @@ async def quick_connection_test(token):
 
 if __name__ == "__main__":
     # Configuration
-    BOT_TOKEN = "***REMOVED***"  # Replace with your actual bot token
+    BOT_TOKEN = ""  # Replace with your actual bot token
 
     # Uncomment one of the following options:
 
