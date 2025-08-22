@@ -2,11 +2,18 @@ import discord
 from discord.ext import commands
 import asyncio
 import time
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 class BotStatusChecker:
     def __init__(self, token):
         self.token = token
-        self.bot = commands.Bot(command_prefix='!', intents=discord.Intents.default())
+        intents = discord.Intents.default()
+        intents.message_content = True
+        self.bot = commands.Bot(command_prefix='!', intents=intents)
         self.setup_events()
         self.setup_commands()
 
@@ -195,6 +202,7 @@ class BotStatusChecker:
 async def quick_connection_test(token):
     """Quick test to verify bot can connect"""
     intents = discord.Intents.default()
+    intents.message_content = True
     client = discord.Client(intents=intents)
 
     @client.event
@@ -214,16 +222,27 @@ async def quick_connection_test(token):
             await client.close()
 
 if __name__ == "__main__":
-    # Configuration
-    BOT_TOKEN = ""  # Replace with your actual bot token
+    # Get bot token from environment variables
+    BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
-    # Uncomment one of the following options:
+    if not BOT_TOKEN:
+        print("❌ No bot token found!")
+        print("📝 Please set your token in one of these ways:")
+        print("1. Create a .env file with: DISCORD_BOT_TOKEN=your_token_here")
+        print("2. Set environment variable: export DISCORD_BOT_TOKEN=your_token_here")
+        print("3. Pass as argument when running the script")
+        exit(1)
 
-    # Option 1: Run the full bot with commands
+    print(f"🔑 Bot token loaded from environment variables")
+    print(f"🚀 Starting bot status checker...")
+
+    # Option 1: Run the full bot with commands (default)
     bot_checker = BotStatusChecker(BOT_TOKEN)
     bot_checker.run()
 
-    # Option 2: Run quick connection test
+    # Alternative options (uncomment to use instead):
+
+    # Option 2: Run quick connection test only
     # try:
     #     asyncio.run(quick_connection_test(BOT_TOKEN))
     # except KeyboardInterrupt:
@@ -236,15 +255,8 @@ if __name__ == "__main__":
     # except KeyboardInterrupt:
     #     print("🛑 Tests stopped by user")
 
-    # Instructions are shown below when the bot is not running
-    if BOT_TOKEN == "YOUR_BOT_TOKEN_HERE":
-        print("🔧 Bot status checker ready!")
-        print("📝 Instructions:")
-        print("1. Replace 'YOUR_BOT_TOKEN_HERE' with your actual bot token")
-        print("2. Uncomment one of the options above")
-        print("3. Run the script")
-        print("\n💡 Available commands when bot is running:")
-        print("  !ping - Check latency")
-        print("  !status - Comprehensive status report")
-        print("  !health - Detailed health check")
-        print("  !guilds - List all servers")
+    print("\n💡 Available commands when bot is running:")
+    print("  !ping - Check latency")
+    print("  !status - Comprehensive status report")
+    print("  !health - Detailed health check")
+    print("  !guilds - List all servers")

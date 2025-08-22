@@ -34,7 +34,7 @@ if not BOT_TOKEN:
 
 # Setup intents
 intents = discord.Intents.default()
-intents.message_content = True
+intents.message_content = True  # Required for reading message content
 intents.guilds = True
 intents.members = True
 
