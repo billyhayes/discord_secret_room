@@ -1,4 +1,4 @@
-# Discord Invisible Bot 👻
+# Discord Invisible Roles & Rooms Bot 👻
 
 A Discord bot that creates invisible rooms (channels) and invisible roles for your server. Perfect for creating secret channels, staff areas, or hidden community spaces.
 
@@ -324,7 +324,7 @@ npm start  # For testing only
 
 ### 🎨 Other Cloud Platforms
 - **Render**: Free tier with sleep
-- **Glitch**: Free with CPU limits  
+- **Glitch**: Free with CPU limits
 - **DigitalOcean**: $5/month VPS
 - **AWS EC2**: Enterprise option
 
