@@ -57,9 +57,13 @@ app.get("/", (req, res) => {
   res.send("Discord Invisible Bot is running! 👻");
 });
 
-app.listen(port, () => {
-  console.log(`Health check server running on port ${port}`);
-});
+app
+  .listen(port, "0.0.0.0", () => {
+    console.log(`Health check server running on port ${port}`);
+  })
+  .on("error", (err) => {
+    console.error("Health server error:", err);
+  });
 
 // Slash commands
 const commands = [
@@ -380,10 +384,14 @@ if (!BOT_TOKEN) {
   console.error(
     "❌ No bot token found! Set DISCORD_TOKEN or DISCORD_BOT_TOKEN",
   );
-  process.exit(1);
-}
-if (!CLIENT_ID || !GUILD_ID) {
+  // Don't exit - keep health server running
+  console.log("⚠️ Bot login failed, but health server continues...");
+} else if (!CLIENT_ID || !GUILD_ID) {
   console.error("❌ Missing CLIENT_ID or GUILD_ID environment variables!");
-  process.exit(1);
+  console.log("⚠️ Bot login failed, but health server continues...");
+} else {
+  client.login(BOT_TOKEN).catch((err) => {
+    console.error("❌ Bot login failed:", err);
+    console.log("⚠️ Bot login failed, but health server continues...");
+  });
 }
-client.login(BOT_TOKEN);
