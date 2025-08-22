@@ -1,0 +1,38 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "pip install -r requirements.txt",
+    "startCommand": "python3 start.py"
+  },
+  "deploy": {
+    "numReplicas": 1,
+    "sleepApplication": false,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 3
+  },
+  "environments": {
+    "production": {
+      "variables": {
+        "DISCORD_BOT_TOKEN": "${{DISCORD_BOT_TOKEN}}",
+        "COMMAND_PREFIX": "!",
+        "RAILWAY_ENVIRONMENT": "production",
+        "PYTHONUNBUFFERED": "1",
+        "TZ": "UTC"
+      }
+    },
+    "staging": {
+      "variables": {
+        "DISCORD_BOT_TOKEN": "${{DISCORD_BOT_TOKEN_STAGING}}",
+        "COMMAND_PREFIX": "!!",
+        "RAILWAY_ENVIRONMENT": "staging",
+        "PYTHONUNBUFFERED": "1",
+        "TZ": "UTC"
+      }
+    }
+  },
+  "plugins": [],
+  "regions": [
+    "us-west1"
+  ]
+}

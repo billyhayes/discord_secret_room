@@ -1,335 +1,270 @@
-# Discord Invisible Roles & Rooms Bot 👻
+# Discord Secret Room Bot 🤖
 
-A Discord bot that creates invisible rooms (channels) and invisible roles for your server. Perfect for creating secret channels, staff areas, or hidden community spaces.
+A comprehensive Discord bot built with Python and discord.py, designed for deployment on Railway. This bot provides utility commands, server management features, and interactive functionality for Discord servers.
 
-## Features
+## 🎯 Features
 
-- 🎭 **Invisible Roles**: Create roles that don't appear in the member list and can't be mentioned
-- 🔒 **Invisible Channels**: Create channels that are completely hidden from unauthorized users
-- 👑 **Admin Only**: All commands require Administrator permissions for security
-- 📝 **Slash Commands**: Modern Discord slash command interface
-- 📊 **Management Tools**: List and manage all invisible elements
+- **Always Online** - Deployed on Railway with automatic restarts
+- **Interactive Commands** - Ping, status, server info, user info, and more
+- **Fun Commands** - Dice rolling, coin flipping, echo messages
+- **Admin Tools** - Message cleaning and moderation features
+- **Health Monitoring** - Built-in status checking and diagnostics
+- **Permission Management** - Comprehensive permission system
 
-## Quick Start
+## 🚀 Quick Start
 
-### Prerequisites
+### Local Development
 
-- Node.js 16.11.0 or higher
-- A Discord bot token
-- Administrator permissions on your Discord server
-
-### Installation
-
-1. **Clone or download this project**
-
-2. **Install dependencies**
+1. **Clone and setup environment:**
    ```bash
-   npm install
+   cd discord_secret_room
+   python3 -m venv discord_bot_env
+   source discord_bot_env/bin/activate  # On Windows: discord_bot_env\Scripts\activate
+   pip install -r requirements.txt
    ```
 
-3. **Set up environment variables**
+2. **Set your bot token:**
    ```bash
-   cp .env.example .env
-   ```
-   Edit `.env` and fill in your bot credentials:
-   ```env
-   DISCORD_TOKEN=your_bot_token_here
-   CLIENT_ID=your_bot_client_id_here
-   GUILD_ID=your_server_guild_id_here
-   DEBUG=false
+   export DISCORD_BOT_TOKEN="your_bot_token_here"
    ```
 
-4. **Run the bot**
+3. **Run the bot:**
    ```bash
-   npm start
+   python3 start.py
    ```
 
-## Discord Bot Setup
+### Railway Deployment
 
-### Creating a Bot
+1. **Connect to Railway:**
+   - Go to [Railway Dashboard](https://railway.app/dashboard)
+   - Click "New Project" → "Deploy from GitHub repo"
+   - Select this repository
 
-1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
-2. Click "New Application" and give it a name
-3. Go to the "Bot" section
-4. Click "Add Bot"
-5. Copy the token and add it to your `.env` file as `DISCORD_TOKEN`
-6. Copy the Application ID and add it to your `.env` file as `CLIENT_ID`
+2. **Set environment variables in Railway:**
+   ```
+   DISCORD_BOT_TOKEN = your_discord_bot_token
+   COMMAND_PREFIX = !
+   RAILWAY_ENVIRONMENT = production
+   PYTHONUNBUFFERED = 1
+   ```
 
-### Getting Guild ID
+3. **Deploy:**
+   Railway automatically detects and deploys using `start.py`
 
-1. Enable Developer Mode in Discord (User Settings → Advanced → Developer Mode)
-2. Right-click your server name and select "Copy Server ID"
-3. Add this to your `.env` file as `GUILD_ID`
+## 📋 Available Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `!ping` | Check bot latency and connection | `!ping` |
+| `!hello` | Friendly greeting | `!hello` |
+| `!status` | Comprehensive bot status | `!status` |
+| `!server` | Display server information | `!server` |
+| `!user` | Show user information | `!user @someone` |
+| `!roll` | Roll a dice (default 6 sides) | `!roll 20` |
+| `!flip` | Flip a coin | `!flip` |
+| `!echo` | Echo back a message | `!echo Hello World` |
+| `!railway` | Railway deployment info | `!railway` |
+| `!clean` | Clean messages (admin only) | `!clean 5` |
+| `!help` | Show all commands | `!help` |
+
+## 🗂️ Project Structure
+
+```
+discord_secret_room/
+├── start.py                 # Main bot entry point (Railway)
+├── interactive_bot.py       # Local development bot
+├── Procfile                 # Railway process definition
+├── requirements.txt         # Python dependencies
+├── railway.json            # Railway configuration
+├── package.json            # Node.js metadata (legacy)
+├── index.js                # Node.js version (legacy)
+├── railway.toml            # Railway settings
+├── 
+├── tests/                  # Bot testing utilities
+│   ├── bot_status.py       # Comprehensive bot status checker
+│   ├── simple_bot_test.py  # Simple connection test
+│   ├── clean_bot_test.py   # Clean connection test
+│   └── status_check.py     # Minimal status checker
+│
+├── utils/                  # Utility scripts
+│   ├── decode_permissions.py    # Permission decoder
+│   └── generate_invite.py       # OAuth2 URL generator
+│
+├── scripts/                # Helper scripts
+│   └── activate_env.sh     # Environment activation
+│
+├── docs/                   # Documentation
+│   ├── RAILWAY_DEPLOYMENT.md   # Complete Railway guide
+│   └── bot_permissions_guide.md # Permission reference
+│
+├── deployment/             # Deployment configurations
+│   ├── Dockerfile          # Docker container setup
+│   └── docker-compose.yml  # Multi-service deployment
+│
+└── README.md              # This file
+```
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `DISCORD_BOT_TOKEN` | Your Discord bot token | None | ✅ Yes |
+| `COMMAND_PREFIX` | Bot command prefix | `!` | No |
+| `RAILWAY_ENVIRONMENT` | Deployment environment | `production` | No |
+| `PYTHONUNBUFFERED` | Python output buffering | `1` | No |
 
 ### Bot Permissions
 
-When inviting your bot to your server, make sure it has these permissions:
-- `Manage Roles`
-- `Manage Channels`
-- `View Channels`
-- `Send Messages`
-- `Use Slash Commands`
+The bot requires these Discord permissions:
+- View Channels
+- Send Messages
+- Read Message History
+- Embed Links
+- Use External Emojis
+- Add Reactions
+- Use Slash Commands
 
-**Invite URL Template:**
-```
-https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=268435472&scope=bot%20applications.commands
-```
-
-## Commands
-
-All commands are slash commands and require Administrator permissions.
-
-### `/create-invisible-role`
-Creates an invisible role that won't appear in the member list.
-
-**Parameters:**
-- `name` (required): Name of the role
-- `color` (optional): Hex color code (e.g., #ff0000)
-
-**Example:**
-```
-/create-invisible-role name:Secret Staff color:#ff0000
-```
-
-### `/create-invisible-room`
-Creates an invisible channel that only specific roles can see.
-
-**Parameters:**
-- `name` (required): Name of the channel
-- `role` (required): Role that can access the channel
-- `type` (optional): Channel type (text or voice, defaults to text)
-
-**Example:**
-```
-/create-invisible-room name:staff-secret role:@Secret Staff type:text
-```
-
-### `/assign-invisible-role`
-Assigns an invisible role to a user.
-
-**Parameters:**
-- `user` (required): User to assign the role to
-- `role` (required): Invisible role to assign
-
-**Example:**
-```
-/assign-invisible-role user:@JohnDoe role:@Secret Staff
-```
-
-### `/list-invisible`
-Lists all invisible roles and channels in the server.
-
-**Example:**
-```
-/list-invisible
-```
-
-## How It Works
-
-### Invisible Roles
-- `hoist: false` - Role doesn't appear separately in member list
-- `mentionable: false` - Role can't be mentioned by regular users
-- No special permissions by default
-- Members with these roles appear as regular members in the list
-
-### Invisible Channels
-- Permission overwrites deny `@everyone` from viewing the channel
-- Only specified roles can see and interact with the channel
-- Completely hidden from unauthorized users
-- Works for both text and voice channels
-
-## Security Features
-
-- ✅ Administrator permissions required for all commands
-- ✅ Proper permission validation
-- ✅ Error handling and user feedback
-- ✅ Audit logging with command attribution
-- ✅ Ephemeral responses (only command user sees results)
-
-## Troubleshooting
-
-### Bot Not Responding
-- Check if the bot is online in your server
-- Verify the bot has proper permissions
-- Check console for error messages
-- Ensure slash commands are registered (happens automatically on startup)
-
-### Commands Not Appearing
-- Wait a few minutes after starting the bot
-- Make sure you have Administrator permissions
-- Try refreshing Discord or relogging
-
-### Permission Errors
-- Ensure the bot's role is higher than roles it's trying to manage
-- Verify the bot has `Manage Roles` and `Manage Channels` permissions
-- Check that the bot can see the channels it's working with
-
-## Development
-
-### Running in Development Mode
+**Generate invite URL:**
 ```bash
-npm run dev
+python3 utils/generate_invite.py YOUR_CLIENT_ID essential
 ```
 
-### Environment Variables
-- `DEBUG=true` - Enable additional logging
-- All other variables are required for the bot to function
+## 🔧 Development
 
-### File Structure
-```
-discord/thunderdome/
-├── index.js          # Main bot file
-├── package.json      # Dependencies and scripts
-├── .env.example      # Environment template
-├── .env             # Your environment variables (not tracked)
-└── README.md        # This file
+### Testing
+
+**Quick connection test:**
+```bash
+python3 tests/status_check.py
 ```
 
-## Contributing
+**Comprehensive testing:**
+```bash
+python3 tests/bot_status.py
+```
+
+**Permission debugging:**
+```bash
+python3 utils/decode_permissions.py 2147830848
+```
+
+### Local Development
+
+1. **Activate environment:**
+   ```bash
+   source scripts/activate_env.sh
+   ```
+
+2. **Run interactive bot:**
+   ```bash
+   python3 interactive_bot.py
+   ```
+
+3. **Test commands in Discord:**
+   - `!ping` - Verify connection
+   - `!status` - Check bot health
+
+## 🚂 Railway Deployment
+
+This bot is optimized for Railway deployment:
+
+- **Automatic startup** via `start.py`
+- **Environment variable configuration**
+- **Built-in logging and monitoring**
+- **Auto-restart on crashes**
+- **Scalable architecture**
+
+### Deployment Steps
+
+1. Push code to GitHub
+2. Connect Railway to repository  
+3. Set environment variables
+4. Deploy automatically
+
+See [docs/RAILWAY_DEPLOYMENT.md](docs/RAILWAY_DEPLOYMENT.md) for complete guide.
+
+## 📊 Monitoring
+
+### Health Checks
+
+The bot includes several health monitoring features:
+
+- **Connection status** - Real-time Discord connection
+- **Latency monitoring** - Response time tracking
+- **Server count** - Guild membership tracking  
+- **Error logging** - Comprehensive error handling
+
+### Commands for Monitoring
+
+- `!ping` - Basic connectivity test
+- `!status` - Detailed status report
+- `!railway` - Railway-specific metrics
+
+## 🛡️ Security
+
+- **Token security** - Never commit tokens to git
+- **Permission system** - Role-based command access
+- **Input validation** - Sanitized user inputs
+- **Error handling** - Graceful failure management
+
+## 📖 Documentation
+
+- [Railway Deployment Guide](docs/RAILWAY_DEPLOYMENT.md) - Complete deployment instructions
+- [Bot Permissions Guide](docs/bot_permissions_guide.md) - Permission reference
+- [Discord.py Documentation](https://discordpy.readthedocs.io/) - Library reference
+
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+2. Create feature branch: `git checkout -b feature-name`
+3. Commit changes: `git commit -am 'Add feature'`
+4. Push to branch: `git push origin feature-name`
+5. Submit pull request
 
-## License
+## 📝 License
 
-MIT License - feel free to use this bot in your own servers!
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Support
+## 🆘 Support
 
-If you encounter issues:
-1. Check the troubleshooting section above
-2. Review console logs for error messages
-3. Verify all permissions and setup steps
-4. Check Discord's API status
+### Bot Information
+- **Bot Name:** secret_room#7956
+- **Bot ID:** 1408252400778874990
+- **Current Status:** ✅ Online (Railway)
+- **Command Prefix:** `!`
 
-## 🚀 Railway Deployment
+### Getting Help
+- Use `!help` command in Discord
+- Check [Railway Dashboard](https://railway.app/dashboard) for deployment status
+- Review logs for debugging information
 
-This bot is optimized for Railway deployment - the best free hosting option for Discord bots!
+### Common Issues
 
-### ⚡ Quick Deploy to Railway
+**Bot not responding:**
+1. Check Railway deployment status
+2. Verify `DISCORD_BOT_TOKEN` environment variable
+3. Test with `!ping` command
+4. Review deployment logs
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/discord-bot)
+**Permission errors:**
+1. Check bot permissions in server settings
+2. Use `utils/generate_invite.py` to generate new invite URL
+3. Re-invite bot with updated permissions
 
-### 📋 Step-by-Step Railway Deployment
+## 🎉 Features Roadmap
 
-#### 1. 🔧 **Prepare Your Repository**
-```bash
-# Push your code to GitHub if you haven't already
-git init
-git add .
-git commit -m "Initial Discord Invisible Bot"
-git branch -M main
-git remote add origin https://github.com/yourusername/discord-invisible-bot.git
-git push -u origin main
-```
-
-#### 2. 🚂 **Create Railway Account**
-1. Go to [railway.app](https://railway.app)
-2. Sign up with GitHub (recommended for easy repo access)
-3. Verify your account
-
-#### 3. 📦 **Deploy from GitHub**
-1. Click **"New Project"** in Railway dashboard
-2. Select **"Deploy from GitHub repo"**
-3. Choose your bot repository
-4. Railway will automatically detect it's a Node.js app
-
-#### 4. 🔑 **Configure Environment Variables**
-In your Railway project dashboard:
-1. Go to **Variables** tab
-2. Add these environment variables:
-   ```
-   DISCORD_TOKEN=your_bot_token_here
-   CLIENT_ID=your_bot_client_id_here
-   GUILD_ID=your_server_guild_id_here
-   DEBUG=false
-   ```
-
-#### 5. 🚀 **Deploy**
-Railway will automatically:
-- Install dependencies (`npm install`)
-- Start your bot (`npm start`)
-- Generate a public URL
-- Monitor and restart if needed
-
-### 📊 Railway Benefits
-- ✅ **$5/month credit** (enough for most Discord bots)
-- ✅ **24/7 uptime** (no sleeping)
-- ✅ **Auto-deploy** on git push
-- ✅ **Zero configuration** needed
-- ✅ **Built-in monitoring** and logs
-- ✅ **Custom domains** available
-
-### 🔍 **Monitoring Your Bot**
-In Railway dashboard:
-- **Deployments**: See build logs and status
-- **Metrics**: Monitor CPU, memory, and bandwidth
-- **Logs**: View real-time bot output
-- **Variables**: Update environment variables
-
-### 🔄 **Auto-Deploy Setup**
-Railway automatically redeploys when you push to your GitHub main branch:
-```bash
-# Make changes to your bot
-git add .
-git commit -m "Update bot features"
-git push origin main
-# Railway automatically deploys the changes!
-```
-
-### 🛠️ **Local Development**
-Test locally before deploying:
-```bash
-# Install dependencies
-npm install
-
-# Copy environment template
-cp .env.example .env
-# Edit .env with your bot credentials
-
-# Run locally
-npm start
-```
-
-### 💰 **Cost Management**
-- **Free tier**: $5/month credit
-- **Usage tracking**: Monitor in Railway dashboard
-- **Upgrade**: Add payment method for additional credits
-- **Optimization**: Bot typically uses $1-3/month
-
-### ❗ **Troubleshooting Railway**
-- **Bot not starting**: Check logs in Railway dashboard
-- **Commands not working**: Verify environment variables
-- **Build failing**: Check package.json and dependencies
-- **Out of credits**: Add payment method or optimize usage
-
-### 🔐 **Security Best Practices**
-- ✅ **Never commit** `.env` files to GitHub
-- ✅ **Use Railway Variables** for sensitive data
-- ✅ **Regenerate tokens** if accidentally exposed
-- ✅ **Monitor bot usage** in Discord Developer Portal
-- ✅ **Keep dependencies updated** regularly
+- [ ] Database integration (PostgreSQL)
+- [ ] Slash commands implementation  
+- [ ] Advanced moderation tools
+- [ ] Music playback features
+- [ ] Custom server configurations
+- [ ] Analytics dashboard
+- [ ] Multi-language support
 
 ---
 
-## 📱 **Alternative Deployment Options**
+**Ready to deploy?** Follow the [Railway Deployment Guide](docs/RAILWAY_DEPLOYMENT.md) to get your bot online! 🚀
 
-### 🏠 Local Development
-```bash
-npm start  # For testing only
-```
-
-### 🎨 Other Cloud Platforms
-- **Render**: Free tier with sleep
-- **Glitch**: Free with CPU limits
-- **DigitalOcean**: $5/month VPS
-- **AWS EC2**: Enterprise option
-
-**👑 Railway is recommended** for the best balance of features, reliability, and cost.
-
----
-
-**⚠️ Security Note**: Keep your bot token secure and never share it publicly. Anyone with your bot token can control your bot.
+**Need help?** Use `!help` in Discord or check the documentation in the `docs/` folder.
