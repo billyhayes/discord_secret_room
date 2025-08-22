@@ -8,12 +8,48 @@ const {
   Routes,
 } = require("discord.js");
 const express = require("express");
-require("dotenv").config();
 
-// Get bot token with fallback
+// Try to load .env file, but don't fail if it doesn't exist (Railway doesn't need it)
+try {
+  require("dotenv").config();
+} catch (e) {
+  console.log("No .env file found (normal for Railway deployment)");
+}
+
+// Railway-specific environment variable debugging
+console.log("🚂 Railway Environment Debug:");
+console.log(
+  "All env vars:",
+  Object.keys(process.env).filter(
+    (key) =>
+      key.includes("DISCORD") ||
+      key.includes("CLIENT") ||
+      key.includes("GUILD") ||
+      key.includes("PORT"),
+  ),
+);
+
+// Get bot token with fallback - Railway should have these set
 const BOT_TOKEN = process.env.DISCORD_TOKEN || process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.CLIENT_ID;
 const GUILD_ID = process.env.GUILD_ID;
+
+// Additional Railway debugging
+console.log("Raw environment variables:");
+console.log(
+  "- DISCORD_TOKEN:",
+  process.env.DISCORD_TOKEN
+    ? `${process.env.DISCORD_TOKEN.substring(0, 10)}...`
+    : "undefined",
+);
+console.log(
+  "- DISCORD_BOT_TOKEN:",
+  process.env.DISCORD_BOT_TOKEN
+    ? `${process.env.DISCORD_BOT_TOKEN.substring(0, 10)}...`
+    : "undefined",
+);
+console.log("- CLIENT_ID:", process.env.CLIENT_ID || "undefined");
+console.log("- GUILD_ID:", process.env.GUILD_ID || "undefined");
 
 // Debug logging for environment variables
 console.log("🔍 Environment Variables Debug:");
@@ -42,13 +78,18 @@ const client = new Client({
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Health check endpoint
+// Health check endpoint - works even without bot connection
 app.get("/health", (req, res) => {
   res.json({
     status: "healthy",
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
-    bot_status: client.isReady() ? "connected" : "disconnected",
+    bot_status: client && client.isReady() ? "connected" : "disconnected",
+    env_vars_loaded: {
+      discord_token: !!BOT_TOKEN,
+      client_id: !!CLIENT_ID,
+      guild_id: !!GUILD_ID,
+    },
   });
 });
 
@@ -390,6 +431,7 @@ if (!BOT_TOKEN) {
   console.error("❌ Missing CLIENT_ID or GUILD_ID environment variables!");
   console.log("⚠️ Bot login failed, but health server continues...");
 } else {
+  console.log("🚀 All environment variables found, attempting bot login...");
   client.login(BOT_TOKEN).catch((err) => {
     console.error("❌ Bot login failed:", err);
     console.log("⚠️ Bot login failed, but health server continues...");
