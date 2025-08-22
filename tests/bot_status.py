@@ -223,13 +223,13 @@ async def quick_connection_test(token):
 
 if __name__ == "__main__":
     # Get bot token from environment variables
-    BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+    BOT_TOKEN = os.getenv('DISCORD_TOKEN')
 
     if not BOT_TOKEN:
         print("❌ No bot token found!")
         print("📝 Please set your token in one of these ways:")
-        print("1. Create a .env file with: DISCORD_BOT_TOKEN=your_token_here")
-        print("2. Set environment variable: export DISCORD_BOT_TOKEN=your_token_here")
+        print("1. Create a .env file with: DISCORD_TOKEN=your_token_here")
+        print("2. Set environment variable: export DISCORD_TOKEN=your_token_here")
         print("3. Pass as argument when running the script")
         exit(1)
 

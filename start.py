@@ -26,12 +26,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Bot configuration
-BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+BOT_TOKEN = os.getenv('DISCORD_TOKEN')
 COMMAND_PREFIX = os.getenv('COMMAND_PREFIX', '!')
 ENVIRONMENT = os.getenv('RAILWAY_ENVIRONMENT', 'development')
 
 if not BOT_TOKEN:
-    logger.error("DISCORD_BOT_TOKEN environment variable not found!")
+    logger.error("DISCORD_TOKEN environment variable not found!")
     logger.error("Please set your Discord bot token in Railway environment variables.")
     sys.exit(1)
 
@@ -340,7 +340,7 @@ def main():
         # Run the bot
         bot.run(BOT_TOKEN)
     except discord.LoginFailure:
-        logger.error("❌ Invalid bot token! Check DISCORD_BOT_TOKEN environment variable.")
+        logger.error("❌ Invalid bot token! Check DISCORD_TOKEN environment variable.")
         sys.exit(1)
     except KeyboardInterrupt:
         logger.info("🛑 Bot stopped by user")

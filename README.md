@@ -25,7 +25,7 @@ A comprehensive Discord bot built with Python and discord.py, designed for deplo
 
 2. **Set your bot token:**
    ```bash
-   export DISCORD_BOT_TOKEN="your_bot_token_here"
+   export DISCORD_TOKEN="your_bot_token_here"
    ```
 
 3. **Run the bot:**
@@ -42,7 +42,7 @@ A comprehensive Discord bot built with Python and discord.py, designed for deplo
 
 2. **Set environment variables in Railway:**
    ```
-   DISCORD_BOT_TOKEN = your_discord_bot_token
+   DISCORD_TOKEN = your_discord_bot_token
    COMMAND_PREFIX = !
    RAILWAY_ENVIRONMENT = production
    PYTHONUNBUFFERED = 1
@@ -110,7 +110,7 @@ discord_secret_room/
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
-| `DISCORD_BOT_TOKEN` | Your Discord bot token | None | ✅ Yes |
+| `DISCORD_TOKEN` | Your Discord bot token | None | ✅ Yes |
 | `COMMAND_PREFIX` | Bot command prefix | `!` | No |
 | `RAILWAY_ENVIRONMENT` | Deployment environment | `production` | No |
 | `PYTHONUNBUFFERED` | Python output buffering | `1` | No |
@@ -244,7 +244,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Bot not responding:**
 1. Check Railway deployment status
-2. Verify `DISCORD_BOT_TOKEN` environment variable
+2. Verify `DISCORD_TOKEN` environment variable
 3. Test with `!ping` command
 4. Review deployment logs
 
