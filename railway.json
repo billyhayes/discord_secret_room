@@ -32,7 +32,5 @@
     }
   },
   "plugins": [],
-  "regions": [
-    "us-west1"
-  ]
+  "regions": ["us-west1"]
 }
