@@ -10,6 +10,25 @@ const {
 const express = require("express");
 require("dotenv").config();
 
+// Get bot token with fallback
+const BOT_TOKEN = process.env.DISCORD_TOKEN || process.env.DISCORD_BOT_TOKEN;
+const CLIENT_ID = process.env.CLIENT_ID;
+const GUILD_ID = process.env.GUILD_ID;
+
+// Debug logging for environment variables
+console.log("🔍 Environment Variables Debug:");
+console.log("DISCORD_TOKEN exists:", !!process.env.DISCORD_TOKEN);
+console.log("DISCORD_BOT_TOKEN exists:", !!process.env.DISCORD_BOT_TOKEN);
+console.log("CLIENT_ID exists:", !!process.env.CLIENT_ID);
+console.log("GUILD_ID exists:", !!process.env.GUILD_ID);
+console.log("PORT:", process.env.PORT);
+if (BOT_TOKEN) {
+  console.log("Token length:", BOT_TOKEN.length);
+  console.log("Token starts with:", BOT_TOKEN.substring(0, 10) + "...");
+} else {
+  console.error("❌ No bot token found in DISCORD_TOKEN or DISCORD_BOT_TOKEN");
+}
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -111,18 +130,14 @@ client.once("ready", async () => {
   console.log(`Logged in as ${client.user.tag}!`);
 
   // Register slash commands
-  const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
+  const rest = new REST({ version: "10" }).setToken(BOT_TOKEN);
 
   try {
     console.log("Started refreshing application (/) commands.");
 
-    await rest.put(
-      Routes.applicationGuildCommands(
-        process.env.CLIENT_ID,
-        process.env.GUILD_ID,
-      ),
-      { body: commands },
-    );
+    await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {
+      body: commands,
+    });
 
     console.log("Successfully reloaded application (/) commands.");
   } catch (error) {
@@ -360,4 +375,15 @@ process.on("SIGTERM", () => {
 });
 
 // Login to Discord
-client.login(process.env.DISCORD_TOKEN);
+console.log("🚀 Attempting to login with token...");
+if (!BOT_TOKEN) {
+  console.error(
+    "❌ No bot token found! Set DISCORD_TOKEN or DISCORD_BOT_TOKEN",
+  );
+  process.exit(1);
+}
+if (!CLIENT_ID || !GUILD_ID) {
+  console.error("❌ Missing CLIENT_ID or GUILD_ID environment variables!");
+  process.exit(1);
+}
+client.login(BOT_TOKEN);
